@@ -3,6 +3,7 @@
       th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
 <head>
     <title>Liste des catégories</title>
+
 </head>
 
 <section id="content">
@@ -13,25 +14,43 @@
         <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour aux articles</a>
     </div>
 
+    <div th:if="${erreur}" class="error-message" style="color: darkred; margin-bottom: 15px;">
+        ⚠️ <span th:text="${erreur}"></span>
+    </div>
+
+
+
     <div class="table-container">
-        <table>
+
+        <div style="margin-bottom: 20px; text-align: right;">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un catégorie..." style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <table id="categoryTable">
             <thead>
             <tr>
                 <th>Nom</th>
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
-            <tr th:each="cat : ${categories}">
-                <td><span class="item-name" th:text="${cat.nom}">Nom de catégorie</span></td>
+            <tbody id="categoryBody">
+            <tr th:each="c : ${categories}">
+                <td th:text="${c.nom}">Nom</td>
                 <td>
-                    <div class="action-buttons">
-                        <a th:href="@{'/categories/delete/' + ${cat.id}}" class="btn danger">❌ Supprimer</a>
-                    </div>
+                    <a th:href="@{/categories/edit/{id}(id=${c.id})}"
+                       th:if="${c.articles.empty}"
+                       class="btn">✏️ Modifier</a>
+                    <span th:unless="${c.articles.empty}" class="disabled">🔒 Modifier</span>
+                    <a th:href="@{/categories/delete/{id}(id=${c.id})}"
+                       th:if="${c.articles.empty}"
+                       class="btn danger"
+                       onclick="return confirm('Supprimer cette catégorie ?')">🗑 Supprimer</a>
+                    <span th:unless="${c.articles.empty}" class="disabled">🔒 Supprimer</span>
                 </td>
             </tr>
             </tbody>
         </table>
+        <div class="pagination" id="pagination"></div>
     </div>
+
 </section>
 </html>

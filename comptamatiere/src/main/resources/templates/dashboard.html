@@ -61,70 +61,79 @@
     </div>
 
     <script th:inline="javascript">
-        let articles = [[${articles}]];
-        let map = new Map();
+        document.addEventListener("DOMContentLoaded", function () {
+            const canvas = document.getElementById('chart');
+            if (!canvas) return;
 
-        for (let a of articles) {
-            if (!a.categorie) continue;
-            let val = a.stockActuel * a.prixUnitaire;
-            map.set(a.categorie.nom, (map.get(a.categorie.nom) || 0) + val);
-        }
+            let articles = [[${articles}]];
+            if (!Array.isArray(articles)) return;
 
-        new Chart(document.getElementById('chart'), {
-            type: 'doughnut',
-            data: {
-                labels: Array.from(map.keys()),
-                datasets: [{
-                    label: "Valeur par catégorie (F CFA)",
-                    data: Array.from(map.values()),
-                    backgroundColor: [
-                        '#667eea', '#764ba2', '#f093fb', '#f5576c',
-                        '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
-                        '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3'
-                    ],
-                    borderWidth: 3,
-                    borderColor: '#ffffff',
-                    hoverBorderWidth: 5,
-                    hoverBorderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 12,
-                                family: 'Arial'
-                            },
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#667eea',
-                        borderWidth: 1,
-                        cornerRadius: 10,
-                        callbacks: {
-                            label: function(context) {
-                                const value = context.formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-                                return context.label + ": " + value + " F CFA";
+            let map = new Map();
+
+            for (let a of articles) {
+                if (!a.categorieNom || !a.stockActuel || !a.prixUnitaire) continue;
+                let val = parseFloat(a.stockActuel) * parseFloat(a.prixUnitaire);
+                map.set(a.categorieNom, (map.get(a.categorieNom) || 0) + val);
+            }
+
+            if (map.size === 0) return;
+
+            new Chart(canvas, {
+                type: 'doughnut',
+                data: {
+                    labels: Array.from(map.keys()),
+                    datasets: [{
+                        label: "Valeur par catégorie (F CFA)",
+                        data: Array.from(map.values()),
+                        backgroundColor: [
+                            '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                            '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+                            '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3'
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 5,
+                        hoverBorderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    family: 'Arial'
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#667eea',
+                            borderWidth: 1,
+                            cornerRadius: 10,
+                            callbacks: {
+                                label: function (context) {
+                                    const value = context.formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                                    return context.label + ": " + value + " F CFA";
+                                }
                             }
                         }
+                    },
+                    cutout: '60%',
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
                     }
-                },
-                cutout: '60%',
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
                 }
-            }
+            });
         });
     </script>
 </section>

@@ -63,6 +63,13 @@ public class StockService {
         articleRepository.delete(article);
     }
 
+
+    public boolean articleEstLie(Article article) {
+        return !entreeStockRepository.findByArticle(article).isEmpty()
+                || !sortieStockRepository.findByArticle(article).isEmpty();
+    }
+
+
     public void enregistrerEntree(EntreeStock entree) {
         Long articleId = entree.getArticle().getId();
 

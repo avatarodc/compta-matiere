@@ -323,7 +323,7 @@
                 <a th:href="@{/stock/inventaire}">📊 Inventaire</a>
             </div>
             <div class="nav-item">
-                <a th:href="@{/categories/new}">🗂️ Catégories</a>
+                <a th:href="@{/categories}">🗂️ Catégories</a>
             </div>
             <div class="nav-item">
                 <form th:action="@{/logout}" method="post" style="display: inline;">
@@ -356,6 +356,97 @@
         if (main) {
             main.classList.add('loaded');
         }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 10;
+        const table = document.querySelector("table tbody");
+        const rows = Array.from(table.querySelectorAll("tr"));
+        const searchInput = document.getElementById("searchInput");
+        const pagination = document.getElementById("pagination");
+
+        let filteredRows = rows;
+
+        function renderTable(page = 1) {
+            table.innerHTML = "";
+            const start = (page - 1) * rowsPerPage;
+            const paginated = filteredRows.slice(start, start + rowsPerPage);
+            paginated.forEach(row => table.appendChild(row));
+            renderPagination(page);
+        }
+
+        function renderPagination(currentPage) {
+            const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
+            pagination.innerHTML = "";
+
+            for (let i = 1; i <= pageCount; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i;
+                btn.style.margin = "0 5px";
+                btn.style.padding = "6px 12px";
+                btn.style.borderRadius = "6px";
+                btn.style.border = "1px solid #ccc";
+                btn.style.backgroundColor = i === currentPage ? "#3b82f6" : "#fff";
+                btn.style.color = i === currentPage ? "#fff" : "#333";
+                btn.style.cursor = "pointer";
+
+                btn.addEventListener("click", () => renderTable(i));
+                pagination.appendChild(btn);
+            }
+        }
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            filteredRows = rows.filter(row => row.textContent.toLowerCase().includes(query));
+            renderTable(1);
+        });
+
+        renderTable(1); // Initial render
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rowsPerPage = 10;
+        const searchInput = document.getElementById("searchInput");
+        const tbody = document.getElementById("categoryBody");
+        const pagination = document.getElementById("pagination");
+
+        let allRows = Array.from(tbody.querySelectorAll("tr"));
+        let filteredRows = [...allRows];
+
+        function renderTable(page = 1) {
+            tbody.innerHTML = '';
+            const start = (page - 1) * rowsPerPage;
+            const paginated = filteredRows.slice(start, start + rowsPerPage);
+            paginated.forEach(row => tbody.appendChild(row));
+            renderPagination(page);
+        }
+
+        function renderPagination(currentPage) {
+            pagination.innerHTML = '';
+            const pageCount = Math.ceil(filteredRows.length / rowsPerPage);
+            for (let i = 1; i <= pageCount; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.classList.toggle('active', i === currentPage);
+                btn.addEventListener('click', () => renderTable(i));
+                pagination.appendChild(btn);
+            }
+        }
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            filteredRows = allRows.filter(row =>
+                row.querySelector("td")?.textContent.toLowerCase().includes(query)
+            );
+            renderTable(1);
+        });
+
+        renderTable(1);
     });
 </script>
 
