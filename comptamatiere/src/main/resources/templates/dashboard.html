@@ -1,10 +1,133 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
+    <meta charset="UTF-8">
     <title>Tableau de bord</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
-<body>
-<h1>Bienvenue sur le tableau de bord</h1>
-<a href="/logout">Se déconnecter</a>
-</body>
+
+<section>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">📊 Tableau de Bord</h1>
+            <p class="dashboard-subtitle">Gestion intelligente de votre inventaire</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card total-articles">
+                <span class="stat-icon">📦</span>
+                <div class="stat-value" th:text="${stats.total}">0</div>
+                <div class="stat-label">Total Articles</div>
+            </div>
+
+            <div class="stat-card expired-articles">
+                <span class="stat-icon">⚠️</span>
+                <div class="stat-value" th:text="${stats.expirés}">0</div>
+                <div class="stat-label">Articles Expirés</div>
+            </div>
+
+            <div class="stat-card expiration-rate">
+                <span class="stat-icon">📊</span>
+                <div class="stat-value"><span th:text="${stats.tauxExpirés}">0</span>%</div>
+                <div class="stat-label">Taux d'Expiration</div>
+            </div>
+
+            <div class="stat-card gross-value">
+                <span class="stat-icon">💰</span>
+                <div class="stat-value">
+                    <span th:text="${stats.valeurBrute}">0</span>
+                    <span class="currency">F CFA</span>
+                </div>
+                <div class="stat-label">Valeur Brute</div>
+            </div>
+
+            <div class="stat-card net-value">
+                <span class="stat-icon">💎</span>
+                <div class="stat-value">
+                    <span th:text="${stats.valeurNette}">0</span>
+                    <span class="currency">F CFA</span>
+                </div>
+                <div class="stat-label">Valeur Nette</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">
+                <span>📈</span>
+                Répartition par Catégorie
+            </h2>
+            <canvas id="chart" class="chart-canvas"></canvas>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let articles = [[${articles}]];
+        let map = new Map();
+
+        for (let a of articles) {
+            if (!a.categorie) continue;
+            let val = a.stockActuel * a.prixUnitaire;
+            map.set(a.categorie.nom, (map.get(a.categorie.nom) || 0) + val);
+        }
+
+        new Chart(document.getElementById('chart'), {
+            type: 'doughnut',
+            data: {
+                labels: Array.from(map.keys()),
+                datasets: [{
+                    label: "Valeur par catégorie (F CFA)",
+                    data: Array.from(map.values()),
+                    backgroundColor: [
+                        '#667eea', '#764ba2', '#f093fb', '#f5576c',
+                        '#4facfe', '#00f2fe', '#43e97b', '#38f9d7',
+                        '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3'
+                    ],
+                    borderWidth: 3,
+                    borderColor: '#ffffff',
+                    hoverBorderWidth: 5,
+                    hoverBorderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                family: 'Arial'
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: '#667eea',
+                        borderWidth: 1,
+                        cornerRadius: 10,
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                                return context.label + ": " + value + " F CFA";
+                            }
+                        }
+                    }
+                },
+                cutout: '60%',
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+    </script>
+</section>
 </html>

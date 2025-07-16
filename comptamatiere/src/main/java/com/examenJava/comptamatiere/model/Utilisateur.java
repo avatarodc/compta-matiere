@@ -12,6 +12,7 @@ public class Utilisateur {
     private String email;
     private String motDePasse;
     private String role;
+    private boolean actif = true;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -27,4 +28,9 @@ public class Utilisateur {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public boolean isActif() { return actif; }
+    public void setActif(boolean actif) { this.actif = actif; }
 }
+
+

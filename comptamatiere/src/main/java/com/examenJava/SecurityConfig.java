@@ -29,7 +29,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**").permitAll()
+                        // ✅ ADMIN seulement
+                        .requestMatchers("/stock/**", "/categories/**", "/admin/**", "/utilisateurs/**").hasRole("ADMIN")
+
+                        // ✅ Authentifié (ADMIN ou USER)
+                        .requestMatchers(
+                                "/dashboard",
+                                "/stock/inventaire/**",
+                                "/stock/inventaire/pdf",
+                                "/stock/inventaire/excel"
+                        ).authenticated()
+
+                        // ✅ Public (accessible à tous)
+                        .requestMatchers("/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+
+                        // Tout le reste : authentifié
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -38,9 +52,13 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                );
+                )
+
+                // (facultatif) accès à H2 console
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .headers(headers -> headers.frameOptions().disable());
 
         return http.build();
     }

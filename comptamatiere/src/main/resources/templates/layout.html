@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <title th:replace="${title}">Compta Matière</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --light-bg: #f3f4f6;
+            --text-light: #fff;
+            --text-dark: #333;
+            --hover: #3b82f6;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --nav-height: 80px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-dark);
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        /* Header moderne avec effet glassmorphism */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--text-light);
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f59e0b, #10b981, #8b5cf6, #ef4444);
+            animation: colorShift 3s ease-in-out infinite;
+        }
+
+        @keyframes colorShift {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        header h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.8em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h2::before {
+            content: '💼';
+            font-size: 1.2em;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        header nav a, header nav button {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        header nav a:hover,
+        header nav button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        header nav a:active,
+        header nav button:active {
+            transform: translateY(0);
+        }
+
+        .logout-btn {
+            background: rgba(220, 38, 38, 0.2) !important;
+            border-color: rgba(220, 38, 38, 0.3) !important;
+        }
+
+        .logout-btn:hover {
+            background: rgba(220, 38, 38, 0.3) !important;
+            border-color: rgba(220, 38, 38, 0.4) !important;
+        }
+
+        /* Contenu principal */
+        main {
+            padding: 40px;
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                    radial-gradient(circle at 20% 80%, rgba(30, 58, 138, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Footer moderne */
+        footer {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            color: #d1d5db;
+            padding: 25px 40px;
+            text-align: center;
+            font-size: 0.95em;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-icon {
+            font-size: 1.2em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            header h2 {
+                font-size: 1.4em;
+                margin-bottom: 10px;
+            }
+
+            header nav {
+                gap: 10px;
+            }
+
+            header nav a, header nav button {
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            footer {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            header nav a, header nav button {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        /* Animations d'entrée */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        main {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        footer {
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        /* Indicateur de page active */
+        .nav-item.active a {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Effet de loading pour les transitions */
+        .page-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .page-transition.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- 🌐 NAVBAR -->
+    <header>
+        <h2>Compta Matière - Tableau de bord</h2>
+        <nav>
+            <div class="nav-item">
+                <a th:href="@{/dashboard}">🏠 Accueil</a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/stock/articles}">📦 Articles</a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/stock/inventaire}">📊 Inventaire</a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/categories/new}">🗂️ Catégories</a>
+            </div>
+            <div class="nav-item">
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="logout-btn">🔒 Déconnexion</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 🔄 CONTENU CENTRAL -->
+    <main class="page-transition loaded">
+        <div th:insert="${content}">Contenu ici</div>
+    </main>
+
+</div>
+
+<!-- 🔻 FOOTER GLOBAL -->
+<footer>
+    <div class="footer-content">
+        <span class="footer-icon">©</span>
+        <span>2025 Compta Matière – Tous droits réservés.</span>
+        <span class="footer-icon">💼</span>
+    </div>
+</footer>
+
+<script>
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const main = document.querySelector('main');
+        if (main) {
+            main.classList.add('loaded');
+        }
+    });
+</script>
+
+</body>
+</html>

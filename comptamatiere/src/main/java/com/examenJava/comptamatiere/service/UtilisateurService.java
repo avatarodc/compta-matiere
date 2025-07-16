@@ -19,6 +19,7 @@ public class UtilisateurService implements UserDetailsService {
     @Autowired
     private UtilisateurRepository repo;
 
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOGGER.info("Tentative de connexion avec l'email : " + email);
@@ -32,6 +33,9 @@ public class UtilisateurService implements UserDetailsService {
 
         Utilisateur user = optionalUser.get();
         LOGGER.info("Utilisateur trouvé : " + user.getEmail() + " avec rôle : " + user.getRole());
+        if (!user.isActif()) {
+            throw new UsernameNotFoundException("Compte désactivé.");
+        }
 
         return new User(
                 user.getEmail(),

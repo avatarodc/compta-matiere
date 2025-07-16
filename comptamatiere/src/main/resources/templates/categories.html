@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Liste des catégories</title>
+</head>
+
+<section id="content">
+    <h2>📂 Liste des catégories d’articles</h2>
+
+    <div class="button-container" style="margin-bottom: 25px;">
+        <a th:href="@{/categories/new}" class="btn">➕ Nouvelle catégorie</a>
+        <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour aux articles</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cat : ${categories}">
+                <td><span class="item-name" th:text="${cat.nom}">Nom de catégorie</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{'/categories/delete/' + ${cat.id}}" class="btn danger">❌ Supprimer</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</html>

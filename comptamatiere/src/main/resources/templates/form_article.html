@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+
+<head>
+    <title>Nouvel Article</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <div class="form-card">
+        <h2>🆕 Ajouter un article</h2>
+
+        <form th:action="@{/stock/articles/save}" method="post" th:object="${article}" class="form-grid">
+
+            <div class="form-group">
+                <label for="nom">Nom de l’article</label>
+                <input type="text" id="nom" th:field="*{nom}" required placeholder="Ex : Ordinateur">
+            </div>
+
+            <div class="form-group">
+                <label for="unite">Unité de mesure</label>
+                <input type="text" id="unite" th:field="*{unite}" required placeholder="Ex : pièce, kg, lot">
+            </div>
+
+            <div class="form-group">
+                <label for="prixUnitaire">Prix unitaire (F CFA)</label>
+                <input type="number" id="prixUnitaire" step="0.01" min="0" th:field="*{prixUnitaire}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="stockActuel">Stock initial</label>
+                <input type="number" id="stockActuel" th:field="*{stockActuel}" min="0" required placeholder="Ex : 10">
+            </div>
+
+            <div class="form-group">
+                <label for="dateAcquisition">Date d’acquisition</label>
+                <input type="date" id="dateAcquisition" th:field="*{dateAcquisition}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dureeExpirationMois">Durée d’expiration (mois)</label>
+                <input type="number" id="dureeExpirationMois" min="1" th:field="*{dureeExpirationMois}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tauxAmortissementAnnuel">Taux d’amortissement annuel (%)</label>
+                <input type="number" id="tauxAmortissementAnnuel" step="0.01" min="0" max="100"
+                       th:field="*{tauxAmortissementAnnuel}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="categorie">Catégorie</label>
+                <select id="categorie" th:field="*{categorie.id}" required>
+                    <option value="" disabled selected>-- Choisir une catégorie --</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.nom}"></option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">✅ Enregistrer</button>
+                <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour</a>
+            </div>
+        </form>
+    </div>
+</section>
+</html>

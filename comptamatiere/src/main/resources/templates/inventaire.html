@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Fiche d'inventaire</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <h2>📦 Fiche d'inventaire</h2>
+
+    <div class="controls-container">
+        <a th:href="@{/stock/inventaire/pdf}" class="btn">🧾 Exporter en PDF</a>
+        <a th:href="@{/stock/inventaire/excel}" class="btn">📤 Exporter en Excel</a>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-card healthy">
+            <span class="stat-icon">✅</span>
+            <div class="stat-value" th:text="${stats.total - stats.expirés}">0</div>
+            <div class="stat-label">Articles en bon état</div>
+        </div>
+        <div class="stat-card low-stock">
+            <span class="stat-icon">⚠️</span>
+            <div class="stat-value" th:text="${stockFaible}">0</div>
+            <div class="stat-label">Stock faible</div>
+        </div>
+
+        <div class="stat-card expired">
+            <span class="stat-icon">❌</span>
+            <div class="stat-value" th:text="${stats.expirés}">0</div>
+            <div class="stat-label">Articles expirés</div>
+        </div>
+        <div class="stat-card total">
+            <span class="stat-icon">💰</span>
+            <div class="stat-value"
+                 th:text="${#numbers.formatDecimal(stats.valeurBrute, 0, 'COMMA', 0, 'POINT')} + ' F'">0 F</div>
+            <div class="stat-label">Valeur totale</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Catégorie</th>
+                <th>Stock</th>
+                <th>PU (F CFA)</th>
+                <th>Valeur amortie</th>
+                <th>Revente</th>
+                <th>Pertes</th>
+                <th>Expiration</th>
+                <th>Amortissement</th>
+                <th>État</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${articles}"
+                th:classappend="${a.estExpire()} ? 'expiré' : (${a.stockActuel != null and a.stockActuel < 5} ? 'stock-faible' : 'ok')">
+                <td><span class="item-name" th:text="${a.nom != null ? a.nom : '-'}">Nom</span></td>
+                <td><span class="category-badge" th:text="${a.categorie != null ? a.categorie.nom : '-'}">Catégorie</span></td>
+                <td><span class="value-badge" th:text="${a.stockActuel != null ? a.stockActuel : 0}">0</span></td>
+                <td><span class="value-badge" th:text="${a.prixUnitaire != null ? a.prixUnitaire : 0}">0</span></td>
+                <td><span class="value-badge" th:text="${a.valeurAmortie != null ? a.valeurAmortie : 0}">0</span></td>
+                <td><span class="value-badge" th:text="${a.valeurReventeEstimee != null ? a.valeurReventeEstimee : 0}">0</span></td>
+                <td><span class="value-badge"
+                          th:text="${(a.prixUnitaire != null and a.valeurAmortie != null) ? a.prixUnitaire.subtract(a.valeurAmortie) : 0}">
+                    0</span></td>
+                <td th:text="${a.dateExpirationEstimee != null ? a.dateExpirationEstimee : '-'}">00-00-0000</td>
+                <td th:text="${a.anneeAmortissement} + ' ans'">0 ans</td>
+                <td>
+                    <span class="status-badge"
+                          th:classappend="${a.estExpire()} ? 'status-expired' : (${a.stockActuel != null and a.stockActuel < 5} ? 'status-low' : 'status-ok')"
+                          th:text="${a.estExpire() ? '❌ Expiré' : (a.stockActuel != null and a.stockActuel < 5 ? '⚠️ Stock bas' : '✅ OK')}">
+                        État
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</html>

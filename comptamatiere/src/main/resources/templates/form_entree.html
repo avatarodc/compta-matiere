@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Nouvelle entrée de stock</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <div class="form-card">
+        <h2>📥 Nouvelle entrée de stock</h2>
+
+        <form th:action="@{/stock/entrees/save}" method="post" th:object="${entree}" class="form-grid">
+
+            <div class="form-group">
+                <label for="article">Article</label>
+                <select id="article" th:field="*{article.id}" required>
+                    <option value="" disabled selected>-- Choisir un article --</option>
+                    <option th:each="a : ${articles}" th:value="${a.id}" th:text="${a.nom}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantite">Quantité</label>
+                <input id="quantite" type="number" min="1" th:field="*{quantite}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateEntree">Date d’entrée</label>
+                <input id="dateEntree" type="date" th:field="*{dateEntree}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="source">Source</label>
+                <input id="source" type="text" th:field="*{source}" placeholder="Ex : fournisseur, réintégration...">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">✅ Enregistrer l’entrée</button>
+                <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour</a>
+            </div>
+        </form>
+    </div>
+</section>
+</html>

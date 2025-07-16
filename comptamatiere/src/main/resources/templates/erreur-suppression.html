@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Erreur de suppression</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <div class="table-container" style="max-width: 600px; margin: auto; padding: 40px; text-align: center;">
+        <h2 style="color: #dc2626;">❌ Suppression impossible</h2>
+        <p th:text="${errorMessage}" style="margin-bottom: 25px;">
+            Cet article est lié à des mouvements de stock et ne peut pas être supprimé.
+        </p>
+        <a th:href="@{/stock/articles}" class="btn">🔙 Retour à la liste</a>
+    </div>
+</section>
+</html>

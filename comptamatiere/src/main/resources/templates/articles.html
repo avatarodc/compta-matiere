@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Liste des articles</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <h2>📦 Liste des articles</h2>
+
+    <div class="button-container">
+        <a th:href="@{/stock/articles/new}" class="btn">➕ Ajouter un article</a>
+        <a th:href="@{/stock/entrees/new}" class="btn">📥 Nouvelle entrée</a>
+        <a th:href="@{/stock/sorties/new}" class="btn">📤 Nouvelle sortie</a>
+        <a th:href="@{/stock/inventaire}" class="btn secondary">📊 Voir inventaire</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Unité</th>
+                <th>Prix unitaire</th>
+                <th>Stock actuel</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="a : ${articles}">
+                <td><span class="item-name" th:text="${a.nom}">Ordinateur</span></td>
+                <td><span class="unit-badge" th:text="${a.unite}">pièce</span></td>
+                <td><span class="price-badge" th:text="${a.prixUnitaire} + ' F CFA'">50000 F CFA</span></td>
+                <td><span class="stock-badge" th:text="${a.stockActuel}">10</span></td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{'/stock/articles/delete/' + ${a.id}}" class="btn danger">❌ Supprimer</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</html>

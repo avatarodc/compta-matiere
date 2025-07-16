@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Nouvelle sortie de stock</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <div class="form-card">
+        <h2>📤 Nouvelle sortie de stock</h2>
+
+        <form th:action="@{/stock/sorties/save}" method="post" th:object="${sortie}" class="form-grid">
+
+            <div class="form-group">
+                <label for="article">Article</label>
+                <select id="article" th:field="*{article.id}" required>
+                    <option value="" disabled selected>-- Choisir un article --</option>
+                    <option th:each="a : ${articles}" th:value="${a.id}" th:text="${a.nom}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantite">Quantité</label>
+                <input id="quantite" type="number" th:field="*{quantite}" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateSortie">Date de sortie</label>
+                <input id="dateSortie" type="date" th:field="*{dateSortie}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="motif">Motif</label>
+                <input id="motif" type="text" th:field="*{motif}" placeholder="Ex : transfert, casse, vente...">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">✅ Enregistrer la sortie</button>
+                <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour</a>
+            </div>
+        </form>
+    </div>
+</section>
+</html>

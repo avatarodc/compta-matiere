@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::title}, ~{::#content})}">
+<head>
+    <title>Nouvelle Catégorie</title>
+</head>
+
+<section id="content" th:fragment="content">
+    <div class="form-card" style="max-width: 500px; margin: auto;">
+        <h2>📂 Ajouter une catégorie d'article</h2>
+
+        <form th:action="@{/categories/save}" method="post" th:object="${categorie}" class="form-grid">
+            <div class="form-group">
+                <label for="nom">Nom de la catégorie</label>
+                <input id="nom" type="text" th:field="*{nom}" required
+                       placeholder="Ex : Mobilier, Électroménager, Véhicule, etc.">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn">✅ Enregistrer</button>
+                <a th:href="@{/stock/articles}" class="btn secondary">🔙 Retour</a>
+            </div>
+        </form>
+    </div>
+</section>
+</html>
